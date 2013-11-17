@@ -1,21 +1,26 @@
-package sheepdog.dumb;
+package sheepdog.g8_v1;
 
 import sheepdog.sim.Point;
 
 public class Player extends sheepdog.sim.Player {
     private int nblacks;
     private boolean mode;
-    static boolean flag= false;
-    static int count =0;
-    static int circle_count=0;
-    private int quandrant=0;
-    static int identity=0;
-    static int identity1=0;
-    int radius = 12;
-    int radius1 =24;
-    int a=75;
-    int b=0;
-    static int max=0;
+    private boolean flag= false;
+    private int vertical_radius = 12;
+    private int horizontal_radius = 24;
+    
+    //a and b are the center of the ellipsis
+    private int a=75;
+    private int b=0;
+
+    //counts for "rounding up" the sheep
+    private int count = 0;
+    private int circle_count = 0;
+
+    private int max=0;
+    private int phase=0;
+    private boolean firstMove = true;
+
     public void init(int nblacks, boolean mode) {
         this.nblacks = nblacks;
         this.mode = mode;
@@ -27,132 +32,137 @@ public class Player extends sheepdog.sim.Player {
     // my position: dogs[id-1]
     public Point move(Point[] dogs, // positions of dogs
                       Point[] sheeps) { // positions of the sheeps
-        identity++;
-    	Point current = dogs[id-1];
-        //Point sheep_pos = sheeps[];
-        int[] coord1sheeps = new int[4];
-        
-        
-        if(identity==1)
-      	{
+    	
+
+	Point current = dogs[id-1];
+        int[] sheepCounts = new int[4];
+	
+	if (phase == 0) //move dog to the opening of the gate.
+	{
+		if (firstMove) //if it's the first round of the game, compute number of sheep in each section
+		{
+    	   		for(int i = 0; i < sheeps.length; i++)
+      			{
+      				Point p = sheeps[i];
+      				if (p.x<=100 && p.x>=50){
+      					if (p.y<25&&p.y>0){
+      						sheepCounts[0]++;
+      					}
+      					else if (p.y>=25 && p.y<50){
+      						sheepCounts[1]++;
+      					}
+      					else if(p.y>=50 && p.y<75){
+      						sheepCounts[2]++;
+      					}	
+      					else{
+      						sheepCounts[3]++;
+      					}
+      				}
+      			}	
       	
-      	for(int i = 0; i < sheeps.length; i++)
-      	{
-      		Point p = sheeps[i];
-      		if (p.x<=100 && p.x>=50){
-      			if (p.y<25&&p.y>0){
-      				coord1sheeps[0]++;
+			//find section with the most sheep
+    			max = 0;	
+      			for (int j=0;j<4;j++)
+      			{
+      				System.out.println("Value"+sheepCounts[j]);
+      				if(sheepCounts[j]>sheepCounts[max])
+      				{
+      					max=j;
+      				}	
       			}
-      			else if (p.y>=25 && p.y<50){
-      				coord1sheeps[1]++;
-      			}
-      			else if(p.y>=50 && p.y<75){
-      				coord1sheeps[2]++;
-      			}
-      			else{
-      				coord1sheeps[3]++;
-      			}
-      		}
-      	}
-      	
-    	max=0;
-      	for (int j=0;j<4;j++)
-      	{
-      		System.out.println("Value"+coord1sheeps[j]);
-      		if(coord1sheeps[j]>coord1sheeps[max])
-      		{
-      			max=j;
-      		}
-      	}
-      	
-      	}
-      	
-        
-        
-          	if (flag == false && current.x < 73){
-          		current.x=current.x+2;
-          		return current;
-          	}
-          	else if (current.x>=73)
-          	{
-          		flag=true;
-          	}
-          	
-          	
-                   	
-          	if(flag==true)
-          	{	
-           	
-          		//identity1++;
-          		if (identity1==0)
-          		{
-          		if(max==0)
+			firstMove = false; 
+		}
+			
+		
+	
+		//now, move dog to center of the other side of the field
+		if(current.x < 74){
+			current.x+=2;
+			//if we get to 50, go to next phase
+			if (current.x >= 74){
+				phase = 1;
+			}
+			return current;			
+		}
+	}
+	else if (phase == 1){ //now, move dog to the center of the section with the most sheep.
+  		if(max==0)
               	{	
               		while(current.y>15)
               		{
-              		current.y-=2;
-              		b=13;
-              		return current;
+              			current.y-=2;
+              			b=13;
+				if (current.y <=15)
+					phase = 2;
+              			return current;
               		}
-              		identity1++;
               	}
-              	else if(max==1)
+		else if (max==1)
               	{	
-              		while(current.y>39)
+              		if(current.y>39)
               		{
-              		current.y-=2;
-              		b=37;
-              		return current;
+              			current.y-=2;
+              			b=37;
+				if (current.y <=39)
+					phase = 2;
+              			return current;
               		}
-              		identity1++;
               	}
               	
               	else if(max==2)
               	{	
-              		while(current.y<=60)
+              		if(current.y<60)
               		{
-              		current.y+=2;
-              		b=62;
-              		return current;
+              			current.y+=2;
+              			b=62;
+				if (current.y>=60)
+					phase = 2;
+              			return current;
               		}
-              		identity1++;
               	}
               	
               	else if(max==3)
               	{	
-              		while(current.y<=85)
+              		if(current.y<85)
               		{
-              		current.y+=2;
-              		b=87;
-              		return current;
+              			current.y+=2;
+              			b=87;
+				if (current.y>=85)
+					phase = 2;
+              			return current;
               		}
-              		identity1++;
               	}
+ 
+	}
+	else if (phase == 2) { //circle the dogs in this section based on the dimensions of the section and an ellipsis shape
+		b=(int)current.y;
+          	if(count<32 && circle_count<10)
+          	{	
+          		double t = 2 * Math.PI * count/32;
+          		current.y= b + vertical_radius*Math.sin(t);
+          		current.x= a + horizontal_radius*Math.cos(t);
+          		count++;
+          		if (count==32)
+          		{
+          			count=0;
+          			circle_count++;
+          			if (circle_count%2==0 && circle_count!=0)
+          			{
+          				vertical_radius-=2;
+          				horizontal_radius-=2;
+          			}
           		}
-              	//b=(int)current.y;
-          		//current.y=current.y-2;
-          		while(count<32 && circle_count<10)
-          		{	
-          			double t = 2 * Math.PI * count/32;
-          			System.out.println(t);
-          			current.y=  b+ radius*Math.sin(t);
-          			current.x=a+ radius1*Math.cos(t);
-          			count++;
-          			if (count==32)
-          					{
-          				count=0;
-          				circle_count++;
-          				if (circle_count%2==0 && circle_count!=0)
-          				{
-          					radius=radius-2;
-          					radius1=radius1-2;
-          				}
-          					}
-          			return current;
-          		}
-           		
+			if (circle_count==10 && count==32)
+				phase = 3;
+          		return current;
           	}
+	}
+
+
+
+	//the code should never get here, but if we have to return something and no conditions are met, don't move	
         return current;
+
     }
 
 }
