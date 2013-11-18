@@ -21,273 +21,33 @@ public class Player extends sheepdog.sim.Player {
     private static int previousPhase = 0;
     private int totalLoops = 0; 
     private boolean dogsInPosition = false;
-
+	private boolean dogPlayersExist = false;
+	private static DogPlayer d0;
+	private static DogPlayer d1;
+	private static DogPlayer d2;
+	
     public void init(int nblacks, boolean mode) {
         this.nblacks = nblacks;
         this.mode = mode;
+	d0 = new DogPlayer(0);
+	d1 = new DogPlayer(1);
+	d2 = new DogPlayer(2);
     }
     
     // Return: the next position
     // my position: dogs[id-1]
     public Point move(Point[] dogs, // positions of dogs
                       Point[] sheeps) { // positions of the sheeps
-        Point current = dogs[id-1];
-	System.out.println("Current phase: " + phase);
-	System.out.println("FirstDownSteps count: " + firstDownSteps);
-	System.out.println("FirstDownCount count: " + firstDownCount);
-	
-	if (firstDownSteps <= 4){
-		return current;
-	}
-/*	if(phase == -1){
-		if (id == 1){
-			if (current.y > 15){
-				current.y -=2;
-				if (current.y == 15 && dogs[2].y == 85)
-					phase = 0;
-			}
+	Point current = dogs[id-1];		
+		if (dogs[0].x == current.x && dogs[0].y == current.y){
+			return d0.getMoveForDog(dogs, sheeps);
 		}
-		if (id == 3){
-			if (current.y < 85){
-				current.y +=2;
-				if (current.y == 85 && dogs[0].y == 15)
-					phase = 0;
-			}
-
+		else if (dogs[1].x == current.x && dogs[1].y == current.y){
+			return d1.getMoveForDog(dogs, sheeps);
+		}
+		else if (dogs[2].x == current.x && dogs[2].y == current.y){
+			return d2.getMoveForDog(dogs, sheeps);
 		}
 		return current;
-	}*/
-	if (dogsInPosition == false && dogs[2].y < 85 || dogs[0].y > 15){
-		if (id == 1)
-			current.y -=2;
-		else if (id == 3)
-			current.y +=2;
-		return current;
 	}
-	//phase 0: move dog to correct side of field
-	else if (phase == 0){
-		dogsInPosition = true;
-		if(current.x < 48){
-			current.x+=2;
-			return current;
-		}
-		else if (current.x>=48){
-			current.x+=1;
-			phase = 1;
-			return current;
-		}
-	}
-	//phase 1: move dog down
-	else if (phase == 1)//move dog down
-	{
-		if(firstDownCount < firstDownSteps){
-			current.y+=2;
-			firstDownCount++;
-			if (firstDownCount == firstDownSteps){
-				phase = 2;
-			}
-			return current;
-		}
-
-	}
-	//phase 2: move dog from L to R across bottom
-	else if (phase == 2) //move dog right
-	{
-		if (rightCount < rightSteps){
-			current.x+=2;
-			rightCount++;
-			if (rightCount == rightSteps){
-				phase = 100;
-				dir = 1;
-				nextPhase = 3;
-				rightCount = 0;
-			}
-			return current;
-		}
-	}
-	
-	else if (phase == 3) //move dog left
-	{
-		if (rightCount < rightSteps){
-			current.x-=2;
-			rightCount++;
-			if (rightCount == rightSteps){
-				phase = 100;
-				dir = 1;
-				nextPhase = 4;
-				rightCount = 0;
-			}
-			return current;
-		}
-	}
-	else if (phase == 4) //move dog right
-	{
-		if (rightCount < rightSteps){
-			current.x+=2;
-			rightCount++;
-			if (rightCount == rightSteps){
-				phase = 5;
-			//	upSteps-=2;
-			}
-			return current;
-		}
-	}
-	else if (phase == 5) //move dog up
-	{
-		if (upCount < upSteps){
-		current.y -=2;
-			upCount++;
-			if (upCount == upSteps)
-				phase = 6;
-			return current;
-		}
-	}
-	else if (phase == 6) //move dog left
-        {
-		if (leftCount < leftSteps){
-			current.x -=2;
-			leftCount++;
-			if (leftCount == leftSteps)
-				phase = 7;
-			return current;
-		}
-	}
-	else if (phase == 7) //move dog back to original spot
-	{
-		if (secondDownCount < secondDownSteps){
-			current.y += 2;
-			secondDownCount++;
-			if (secondDownCount == secondDownSteps){
-				totalLoops++;
-				phase = 15;
-				previousPhase = 7;
-			}
-			return current;
-		}
-	}
-	else if (phase == 8){
-		if (secondDownCount < secondDownSteps){
-			current.y -=2;
-			secondDownCount++;
-			if (secondDownCount == secondDownSteps)
-				phase = 9;
-			return current;
-		}
-	}
-	else if (phase == 9){
-		if (leftCount < leftSteps){
-			current.x +=2;
-			leftCount++;
-			if (leftCount == leftSteps){
-				leftCount = 0;
-				phase = 100;
-				dir = -1;
-				nextPhase = 10;
-				
-			}
-			return current;
-		}
-	}
-	else if (phase == 10){
-		if (leftCount < leftSteps){
-			current.x -=2;
-			leftCount++;
-			if (leftCount == leftSteps){
-				leftCount = 0;
-				phase = 100;
-				dir = -1;
-				nextPhase = 11;
-				
-			}
-			return current;
-		}
-	}
-	else if (phase == 11){
-		if (leftCount < leftSteps){
-			current.x +=2;
-			leftCount++;
-			if (leftCount == leftSteps){
-				phase = 12;
-				upCount -=1; 	
-			}
-			return current;
-		}
-	}
-	else if (phase == 12){
-		if (upCount < upSteps){
-			current.y +=2;
-			upCount++;
-			if (upCount == upSteps)
-				phase = 13;
-			return current;
-		}
-	}
-	else if (phase == 13){
-		if (rightCount < rightSteps){
-			current.x-=2;
-			rightCount++;
-			if (rightCount == rightSteps){
-				phase = 14;
-			}
-		}
-	}
-	else if (phase == 14){
-		if(firstDownCount < firstDownSteps){
-			current.y-=2;
-			firstDownCount++;
-			if (firstDownCount == firstDownSteps){
-				totalLoops++;
-				phase = 15;
-				previousPhase = 14;
-			}
-			return current;
-		}
-	}
-	else if (phase == 15){
-		firstDownCount = 0;
-		secondDownCount = 0;
-		leftCount = 0;
-		rightCount = 0;
-		upCount = 0;
-		if(totalLoops % 2 == 0){
-			firstDownSteps--;
-			secondDownSteps--;
-		}
-		rightSteps--;
-		leftSteps--;
-		upSteps--;
-		if (previousPhase == 7){
-			current.y += 1;
-			current.x += 1;
-			phase = 8;
-		}
-		else{
-			current.y -= 1;
-			current.x+=1;
-			phase = 1;
-		}
-		//reverse = !reverse;
-		return current;
-	}
-	
-	else if (phase == 100){
-		return moveOne(current);
-	}
-
-	//don't do anything if we don't meet the criteria
-	System.out.println("Code shouldn't go here");
-	return current;
-    }
-	//dir = 1 = move up, dir = -1 = move down
-    public static  Point moveOne(Point current){
-		if (dir == 1){
-			current.y-=1;
-		}
-		else if (dir == -1){
-			current.y += 1;
-		}	
-		phase = nextPhase;
-		return current;
-	}
-	
 }
