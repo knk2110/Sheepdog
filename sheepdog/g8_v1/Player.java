@@ -135,14 +135,28 @@ public class Player extends sheepdog.sim.Player {
  
 	}
 	else if (phase == 2) { //circle the dogs in this section based on the dimensions of the section and an ellipsis shape
+		if(current.x<=(horizontal_radius+a)){
+			current.x+=2;
+			if (current.x >= (horizontal_radius+a))
+				phase = 3;
+			return current;
+		}
+		phase = 3;
+		return current;
+	}
+	else if (phase == 3) {
 		b=(int)current.y;
-          	if(count<32 && circle_count<10)
+		double circumference = Math.PI * Math.sqrt(2) * Math.sqrt(Math.pow(.5*horizontal_radius, 2) + Math.pow(.5*vertical_radius, 2));
+		double divisor = circumference/2.0;
+		double count_max = 360.0/divisor;
+		
+          	if(count<count_max && circle_count<10)
           	{	
-          		double t = 2 * Math.PI * count/32;
+          		double t = 2 * Math.PI * count/count_max;
           		current.y= b + vertical_radius*Math.sin(t);
           		current.x= a + horizontal_radius*Math.cos(t);
           		count++;
-          		if (count==32)
+          		if (count==count_max)
           		{
           			count=0;
           			circle_count++;
@@ -152,8 +166,8 @@ public class Player extends sheepdog.sim.Player {
           				horizontal_radius-=2;
           			}
           		}
-			if (circle_count==10 && count==32)
-				phase = 3;
+			if (circle_count==10 && count==count_max)
+				phase = 4;
           		return current;
           	}
 	}
