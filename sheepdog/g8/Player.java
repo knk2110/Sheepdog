@@ -37,7 +37,8 @@ public class Player extends sheepdog.sim.Player {
                 convexHull = GrahamScan.getConvexHull(new ArrayList<Point>(undeliveredSheep.values()));
                 calculateNewHull = false;
             }
-
+            
+           
             if (pushingSheep) {
                 Point pointToMoveTo = Functions.getMoveTowardPoint(current, convexHull.get(vertexNumber));
                 if (Functions.dist(current, pointToMoveTo) < 1) {

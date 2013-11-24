@@ -1,4 +1,4 @@
-package sheepdog.dumb;
+package sheepdog.g8_v5;
 
 import sheepdog.sim.Point;
 
@@ -9,6 +9,7 @@ public class Player extends sheepdog.sim.Player {
     private static Point moved=new Point(0.0,0.0); 
     private boolean mode;
     static boolean flag= false;
+    private static Point gate_pos= new Point(48.372,51.162);
     public static Point back_pos = new Point(50,50);
     static int count =0;
     static int sheep_id;
@@ -69,7 +70,7 @@ public class Player extends sheepdog.sim.Player {
 			dog_pos=return_pos(current,sheep[sheep_id]);
 	        moved = move_pos(current, dog_pos );
 	        
-	        if(moved.x==(dog_pos.x) && moved.y==(dog_pos.y))
+	        if(moved.x>(sheep[sheep_id].x))
 	        {
 	        	gameplay=0;
 	        	//continue;
@@ -80,13 +81,17 @@ public class Player extends sheepdog.sim.Player {
 
 		case 0:
 			System.out.println("helloooooooooooooooooooooo");
-			Point back_to_pos=return_pos(current,back_pos);
-        	Point back_to_gate=move_pos(current,back_to_pos);
+			Point back_to_pos=return_pos(back_pos,sheep[sheep_id]);
+        	Point back_to_gate=back_pos(current,back_to_pos);
+        	if(back_to_gate.x<=50)
+        	{
+        		break;
+        	}
+        	
         	return back_to_gate;
 			//break;
-		}
-        
-              
+		
+		}             
         return current;
     }
     
@@ -95,20 +100,22 @@ public class Player extends sheepdog.sim.Player {
     public static Point return_pos(Point dog, Point dest_sheep)
     {
     	double dist_x = dest_sheep.x-dog.x;
-    	System.out.println("sheep's x position"+dest_sheep.x);
-    	System.out.println("sheep's y position"+dest_sheep.y);
+    	//System.out.println("sheep's x position"+dest_sheep.x);
+    	//System.out.println("sheep's y position"+dest_sheep.y);
         double dist_y = dest_sheep.y-dog.y;
         double dist = Math.sqrt(Math.abs((dist_x*dist_x)+(dist_y*dist_y)));
         System.out.println("dist"+dist);
-        
-        double theta = dist_y/dist_x;
+        //double r = 4/dist;
+        //double theta = dist_y/dist_x;
         //double cos = dist_y/dist;
-        
-            double pos = Math.atan(Math.abs(theta));
+        double pos = Math.atan2(dist_y,dist_x);
+            //double pos = Math.atan(Math.abs(theta));
             //double pos1= 4/dist;
-            System.out.println("pos"+pos);
-            double x = dest_sheep.x + Math.cos(pos);
-            double y = dest_sheep.y + Math.sin(pos);
+            //System.out.println("pos"+pos);
+            double x = dest_sheep.x + 2*Math.cos(pos);
+            double y = dest_sheep.y + 2*Math.sin(pos);
+            //double x = (1-r)*dest_sheep.x + r*dog.x;
+            //double y = (1-r)*dest_sheep.y + r*dog.y;
             /*double x = dest_sheep.x + Math.cos(pos);
             double y = dest_sheep.y + Math.sin(pos);*/
             if (x > 100)
@@ -127,8 +134,8 @@ public class Player extends sheepdog.sim.Player {
     {
     	double x2,y2;
     	double dist_x = dest_sheep.x-dog.x;
-    	System.out.println("dog's x position"+dog.x);
-    	System.out.println("dog's y position"+dog.y);
+    	System.out.println("dog's current x position"+dog.x);
+    	System.out.println("dog's current y position"+dog.y);
         double dist_y = dest_sheep.y-dog.y;
         double dist = Math.sqrt(Math.abs((dist_x*dist_x)+(dist_y*dist_y)));
         System.out.println("dist"+dist);
@@ -155,10 +162,44 @@ public class Player extends sheepdog.sim.Player {
             if (y > 100)
                 y = 100;
             //System.out.println("dogs next position"+x);
+            System.out.println("dogs moved x position"+x);
+            System.out.println("dogs moved y position"+y);
             return new Point(x, y);
-    }
+        	}
     }
     
+    
+    
+    public static Point back_pos(Point dog, Point dest_sheep)
+    {
+    	double x2,y2;
+    	double dist_x = dest_sheep.x-dog.x;
+    	System.out.println("dog's current x position"+dog.x);
+    	System.out.println("dog's current y position"+dog.y);
+        double dist_y = dest_sheep.y-dog.y;
+        double dist = Math.sqrt(Math.abs((dist_x*dist_x)+(dist_y*dist_y)));
+        System.out.println("dist"+dist);
+        
+        
+		if (dist < 2)
+		{
+			return dest_sheep;
+		}
+        else {
+            double pos = (1-Hop)/dist;
+            //System.out.println("pos"+pos);
+            double x = dog.x + pos *dist_x;
+            double y = dog.y + pos *dist_y;
+            if (x > 100)
+                x = 100;
+            if (y > 100)
+                y = 100;
+            //System.out.println("dogs next position"+x);
+            System.out.println("dogs moved x position"+x);
+            System.out.println("dogs moved y position"+y);
+            return new Point(x, y);
+        	}
+    }
     
     
     
