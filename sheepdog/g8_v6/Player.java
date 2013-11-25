@@ -31,6 +31,11 @@ public class Player extends sheepdog.sim.Player {
     static int zoneAssignmentCount = 0;
     private Point[] dogs;
     private Point[] sheeps;
+    private boolean dog1StartedFromGoal = false;
+    private boolean dog2StartedFromGoal = false;
+    private boolean dog3StartedFromGoal = false;
+    private boolean dog4StartedFromGoal = false;
+    private boolean dog5StartedFromGoal = false;
 
     public void init(int nblacks, boolean mode) {
         this.nblacks = nblacks;
@@ -181,22 +186,91 @@ public class Player extends sheepdog.sim.Player {
     public Point push(int dogID){
 	if (dogID == 1){
 		Point myGoal = zone1goal;
+		Point myPoint = dogs[dogID-1];
+		if (dog1StartedFromGoal == false && computeDistance(dogs[dogID-1],myGoal)>0){
+			if (computeDistance(myPoint,myGoal)<=MAX_SPEED){
+				myPoint.x += computeDistance(myPoint, myGoal)*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+				myPoint.y += computeDistance(myPoint, myGoal)*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+				dog1StartedFromGoal = true;
+				return myPoint;
+			}
+			myPoint.x += MAX_SPEED*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+			myPoint.y += MAX_SPEED*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+			return myPoint;
+		}
 		return new Point(dogs[dogID-1].x, dogs[dogID-1].y+1.99);
 	}
 	else if (dogID == 2){
 		Point myGoal = zone2goal;
-		return dogs[dogID-1];
+		Point myPoint = dogs[dogID-1];
+		if (dog2StartedFromGoal == false && computeDistance(dogs[dogID-1],myGoal)>0){
+			if (computeDistance(myPoint,myGoal)<=MAX_SPEED){
+				myPoint.x += computeDistance(myPoint, myGoal)*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+				myPoint.y += computeDistance(myPoint, myGoal)*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+				dog2StartedFromGoal = true;
+				return myPoint;
+			}
+			myPoint.x += MAX_SPEED*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+			myPoint.y += MAX_SPEED*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+			return myPoint;
+		}
+		myPoint.x-=Math.sqrt(1.99);
+		myPoint.y += Math.sqrt(1.99);
+		return myPoint;
+	
 	}
 	else if (dogID == 3){
 		Point myGoal = zone3goal;
-		return new Point(dogs[dogID-1].x-1.99, dogs[dogID-1].y);
+		Point myPoint = dogs[dogID-1];
+		if (dog3StartedFromGoal == false && computeDistance(dogs[dogID-1],myGoal)>0){
+			if (computeDistance(myPoint, myGoal)<=MAX_SPEED){
+				myPoint.x += computeDistance(myPoint, myGoal)*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+				myPoint.y += computeDistance(myPoint, myGoal)*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+				dog3StartedFromGoal= true;
+				return myPoint;
+			}
+			myPoint.x += MAX_SPEED*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+			myPoint.y += MAX_SPEED*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+			return myPoint;
+		}	
+		myPoint.x -= 1.99;
+		return myPoint;
 	}
 	else if (dogID == 4){
 		Point myGoal = zone4goal;
-		return dogs[dogID-1];
+		Point myPoint = dogs[dogID-1];
+		if (dog4StartedFromGoal == false && computeDistance(dogs[dogID-1],myGoal)>0){
+			if (computeDistance(myPoint, myGoal)<=MAX_SPEED){
+				myPoint.x += computeDistance(myPoint, myGoal)*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+				myPoint.y += computeDistance(myPoint, myGoal)*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+				dog4StartedFromGoal= true;
+				return myPoint;
+			}
+			myPoint.x += MAX_SPEED*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+			myPoint.y += MAX_SPEED*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+			return myPoint;
+		}
+		myPoint.x -= Math.sqrt(1.99);
+		myPoint.y -= Math.sqrt(1.99);
+		return myPoint;	
+	
 	}
 	else{ //dogID = 5
-		return new Point(dogs[dogID-1].x, dogs[dogID-1].y-1.99);
+		Point myGoal = zone5goal;
+		Point myPoint = dogs[dogID-1];
+		if (dog5StartedFromGoal == false && computeDistance(dogs[dogID-1],myGoal)>0){
+			if (computeDistance(myPoint,myGoal)<=MAX_SPEED){
+				myPoint.x += computeDistance(myPoint, myGoal)*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+				myPoint.y += computeDistance(myPoint, myGoal)*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+				dog5StartedFromGoal= true;
+				return myPoint;
+			}
+			myPoint.x += MAX_SPEED*(myGoal.x-myPoint.x)/computeDistance(myPoint, myGoal);
+			myPoint.y += MAX_SPEED*(myGoal.y-myPoint.y)/computeDistance(myPoint, myGoal);
+			return myPoint;
+		}
+	
+		return new Point(myPoint.x, myPoint.y-1.99);
 	}
 
     }
