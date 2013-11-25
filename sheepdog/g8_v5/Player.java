@@ -160,6 +160,7 @@ public class Player extends sheepdog.sim.Player {
     
     
     
+    
     public static Point move_pos(Point dog, Point dest_sheep)
     {
     	double x2,y2;

@@ -51,7 +51,32 @@ public class Player extends sheepdog.sim.Player {
         
       
     	if (flag == false && identity==0 && current.x < 50){
-    		current.x=current.x+2;
+    		double ydist = current.y-back_pos.y;
+    		double xdist=current.x-back_pos.x;
+    		double poss = Math.atan(Math.abs(ydist/xdist));
+    		//double distance = Math.sqrt(((current.x-back_pos.x)*(current.x-back_pos.x)) + ((current.x-back_pos.x)*(current.x-back_pos.x)));
+    		
+    		if(xdist<0)
+    		{
+    			current.x=current.x+ 1.99*Math.cos(poss);
+    		}
+    		else
+    		{
+    			current.x=current.x-1.99*Math.cos(poss);
+    		}
+    		
+    		if(ydist<0)
+    		{
+    			current.y=current.y+ 1.99*Math.sin(poss);
+    		}
+    		else
+    		{
+    			current.y=current.y-1.99*Math.sin(poss);
+    		}
+    		
+    		//current.x=current.x+ 1.99*Math.cos(poss);
+    		//current.y=current.y+ 1.99*Math.sin(poss);
+    		//current.x=current.x+2;
     		return current;
     	}
     	else if (current.x>=50 && identity==0)
