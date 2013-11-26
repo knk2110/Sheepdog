@@ -22,15 +22,19 @@ public class Player extends sheepdog.sim.Player {
     static Point zone4goal = new Point(75, 65);
     static Point zone5UL = new Point(75, 2*ZONE_V_LENGTH);
     static Point zone5goal = new Point(62.5, 65);
+	static Point zone6goal = new Point(50,50);
+	static Point zone6UL = new Point(62.5,0);
     static Zone zone1 = new Zone(zone1UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone1goal);
     static Zone zone2 = new Zone(zone2UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone2goal);
     static Zone zone3 = new Zone(zone3UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone3goal);
     static Zone zone4 = new Zone(zone4UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone4goal);
     static Zone zone5 = new Zone(zone5UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone5goal);
+	static Zone zone6 = new Zone(zone6UL, ZONE_H_LENGTH, ZONE_V_LENGTH, zone6goal);
     static ArrayList<Zone> zones = new ArrayList<Zone>();
     static int zoneAssignmentCount = 0;
     private Point[] dogs;
     private Point[] sheeps;
+	private Point[] sheepsToMove;	//THIS is what governs what sheep we will move
     private boolean dog1StartedFromGoal = false;
     private boolean dog2StartedFromGoal = false;
     private boolean dog3StartedFromGoal = false;
@@ -40,13 +44,12 @@ public class Player extends sheepdog.sim.Player {
     public void init(int nblacks, boolean mode) {
         this.nblacks = nblacks;
         this.mode = mode;
-	zones.add(zone1);
-	zones.add(zone2);
-	zones.add(zone3);
-	zones.add(zone4);
-	zones.add(zone5);
-
-    
+		zones.add(zone1);
+		zones.add(zone2);
+		zones.add(zone3);
+		zones.add(zone4);
+		zones.add(zone5);  
+		zones.add(zone6);
         
     }
     
@@ -55,56 +58,64 @@ public class Player extends sheepdog.sim.Player {
     public Point move(Point[] dogs, // positions of dogs
                       Point[] sheeps) { // positions of the sheeps
 	
-	this.dogs = dogs;
-	this.sheeps = sheeps;
-
-
-/*	System.out.println("zone 1 empty: " + zoneOneEmpty);
-	System.out.println("zone 2 empty: " + zoneTwoEmpty);
-	System.out.println("zone 3 empty: " + zoneThreeEmpty);
-	System.out.println("zone 4 empty: " + zoneFourEmpty);
-	System.out.println("zone 5 empty: " + zoneFiveEmpty);
-*/	
-	Point currentDogPoint = dogs[id-1];
-
-	//move dogs through gate
-	if (currentDogPoint.x < 50){
-		return moveDogTowardGate(currentDogPoint);
-	}
-	for (int i = 0; i < zones.size();i++){
-		System.out.println("zone " + i + " is " + zones.get(i).isEmpty());
-	}
-	boolean zone1Empty = true;
-	boolean zone2Empty = true;
-	boolean zone3Empty = true;
-	boolean zone4Empty = true;
-	boolean zone5Empty = true;	
-	for (int i = 0; i < sheeps.length; i++){
-		Point currentSheep = sheeps[i];
-		if (zones.get(0).isInZone(currentSheep))
-			zone1Empty = false;
-		else if (zones.get(1).isInZone(currentSheep))
-			zone2Empty = false;
-		else if (zones.get(2).isInZone(currentSheep))
-			zone3Empty = false;
-		else if (zones.get(3).isInZone(currentSheep))
-			zone4Empty = false;
-		else if (zones.get(4).isInZone(currentSheep))
-			zone5Empty = false;
-	}
+		this.dogs = dogs;
+		this.sheeps = sheeps;
+		
+		if (mode == false){	//basic mode
+			sheepsToMove = new Point[sheeps.length];
+			for (int i = 0; i < sheeps.length; i++){
+					sheepsToMove[i] = sheeps[i];
+			}
+		}
+		else{	//advanced mode
+			sheepsToMove = new Point[nblacks];
+			for (int i = 0; i < nblacks; i++){
+					sheepsToMove[i] = sheeps[i];
+			}
+		}	
 	
-	//if no more sheep in the zones
-	if (zone1Empty && zone2Empty&&zone3Empty&&zone4Empty&&zone5Empty){
-		System.out.println("ALL ZONES EMPTY");
-		return push(id); 	//happens to coordinate with zone		
+		//basic mode
+			Point currentDogPoint = dogs[id-1];
 
-	}
-	//otherwise move sheep into the zones	
-	if (dogs.length <= 5 && zoneAssignmentCount < dogs.length){
-		zones.get(id-1).assignDog(id-1);
-		zoneAssignmentCount++;
-	}
-	return getNextPositionBasedOnZone(id-1);
+			//move dogs through gate
+			if (currentDogPoint.x < 50){
+				return moveDogTowardGate(currentDogPoint);
+			}
+			for (int i = 0; i < zones.size();i++){
+				System.out.println("zone " + i + " is " + zones.get(i).isEmpty());
+			}
+			boolean zone1Empty = true;
+			boolean zone2Empty = true;
+			boolean zone3Empty = true;
+			boolean zone4Empty = true;
+			boolean zone5Empty = true;	
+			for (int i = 0; i < sheepsToMove.length; i++){
+				Point currentSheep = sheepsToMove[i];
+				if (zones.get(0).isInZone(currentSheep))
+					zone1Empty = false;
+				else if (zones.get(1).isInZone(currentSheep))
+					zone2Empty = false;
+				else if (zones.get(2).isInZone(currentSheep))
+					zone3Empty = false;
+				else if (zones.get(3).isInZone(currentSheep))
+					zone4Empty = false;
+				else if (zones.get(4).isInZone(currentSheep))
+					zone5Empty = false;
+			}
+			
+			//if no more sheep in the zones
+			if (zone1Empty && zone2Empty&&zone3Empty&&zone4Empty&&zone5Empty){
+				System.out.println("ALL ZONES EMPTY");
+				return push(id); 	//happens to coordinate with zone		
+
+			}
+			//otherwise move sheep into the zones	
+			if (dogs.length <= 5 && zoneAssignmentCount < dogs.length){
+				zones.get(id-1).assignDog(id-1);
+				zoneAssignmentCount++;
+			}
+			return getNextPositionBasedOnZone(id-1);
+
     }
 
     public Point moveDogTowardGate(Point dogPoint){
@@ -131,10 +142,10 @@ public class Player extends sheepdog.sim.Player {
 		double maxdistance = -1.00;
 		int numSheepInZone = 0;
 		System.out.println("zone " + dogNum + " sheeps: ");
-		for (int i = 0; i < sheeps.length; i++){
-			Point currentSheep = sheeps[i];
+		for (int i = 0; i < sheepsToMove.length; i++){
+			Point currentSheep = sheepsToMove[i];
 			if (myZone.isInZone(currentSheep)){
-				System.out.println("sheep " + i + " at " + sheeps[i].x + "," + sheeps[i].y); 
+				System.out.println("sheep " + i + " at " + sheepsToMove[i].x + "," + sheepsToMove[i].y); 
 				if (computeDistance(currentSheep, myZone.getGoal())>maxdistance){
 					idOfFarthestSheep = i;
 					maxdistance = computeDistance(currentSheep, myZone.getGoal());
@@ -155,7 +166,7 @@ public class Player extends sheepdog.sim.Player {
 
     public Point chaseSheepTowardGoal(int dogNum, int sheepnum, Point goal){
 	Point dogPoint = dogs[dogNum];
-	Point sheepPoint = sheeps[sheepnum];
+	Point sheepPoint = sheepsToMove[sheepnum];
 	sheepPoint = anticipateSheepMovement(dogPoint, sheepPoint);		
         double angleGapToSheep = Calculator.getAngleOfTrajectory(goal, sheepPoint);
         Point idealLocation = Calculator.getMoveInDirection(sheepPoint, angleGapToSheep, 1.0);
