@@ -42,7 +42,7 @@ public class Zone{
 		if (p1.x < 50) //if on the left side, always is not in zne
 			return false;
 		
-		Point p = new Point (p1.x-50, p1.y); //accomodate offset
+		Point p = new Point (p1.x-50, p1.y-50); //accomodate offset
 		double circleCoord = Math.sqrt(Math.pow(p.x,2) + Math.pow(p.y,2));
 		//System.out.println("circleCoord: " + circleCoord + " x: " + p.x + " y: " + p.y);
 		//special case #1: innermost zone

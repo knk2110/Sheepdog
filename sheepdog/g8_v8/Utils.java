@@ -7,7 +7,7 @@ public class Utils {
   public static final double RUN_DISTANCE = 2.0;
   public static final double WALK_DISTANCE = 10.0;
   public static final double FIELD_SIZE = 100.0;
-  public static final double DOG_MAX_SPEED = 1.95;
+  public static final double DOG_MAX_SPEED = 1.80;
   public static final double OPEN_LEFT = 49.0;
   public static final double OPEN_RIGHT = 51.0;
   public static enum SIDE { WHITE_GOAL_SIDE, BLACK_GOAL_SIDE, MIDDLE };

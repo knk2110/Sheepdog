@@ -73,10 +73,14 @@ public class Dog{
 			currentPoint.x += distanceFromZone*(zonePoint.x-currentPoint.x)/distanceFromZone;
 			currentPoint.y += distanceFromZone*(zonePoint.y-currentPoint.y)/distanceFromZone;
 			hasMovedToFirstZone = true;
+			Utils.makePointValid(currentPoint);
 			return currentPoint;
 		}
 		currentPoint.x += Player.MAX_SPEED*(zonePoint.x - currentPoint.x)/distanceFromZone;
 		currentPoint.y += Player.MAX_SPEED*(zonePoint.y - currentPoint.y)/distanceFromZone;
+		Utils.makePointValid(currentPoint);
+		if(currentPoint == zonePoint)
+			hasMovedToFirstZone = true;
 		return currentPoint;
 	}
 	
@@ -100,13 +104,13 @@ public class Dog{
 			if (z.getInnerRadius()!=0){
 				Point goalPoint = new Point(-1, -1);
 				if(z.isTopEdgeZone()){
-					goalPoint = new Point(50.0+z.getInnerRadius()-2,60);	
+					goalPoint = new Point(50.0+z.getInnerRadius()-5,50);	
 				}
 				else if (z.isBottomEdgeZone()){
-					goalPoint = new Point(50.0+z.getInnerRadius()-2,80);
+					goalPoint = new Point(50.0+z.getInnerRadius()-5,50);
 				}
 				else {
-					goalPoint = new Point(50.0+z.getInnerRadius()-2,50); //TODO: fix
+					goalPoint = new Point(50.0+z.getInnerRadius()-5,50); //TODO: fix
 				}
 				return chaseSheepTowardGoal(idOfClosestSheep, sheepToMove, goalPoint);
 			}

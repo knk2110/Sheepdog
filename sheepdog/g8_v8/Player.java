@@ -11,7 +11,7 @@ public class Player extends sheepdog.sim.Player {
 	private static ArrayList<Zone> zones = new ArrayList<Zone>();
 	private static ArrayList<Dog> myDogs = new ArrayList<Dog>();
 	final static Point GATE = new Point(50,50);
-	final static double MAX_SPEED = 1.95;
+	final static double MAX_SPEED = 1.80;
 
     public void init(int nblacks, boolean mode) {
         this.nblacks = nblacks;
@@ -38,16 +38,16 @@ public class Player extends sheepdog.sim.Player {
 			double zoneRadius = 50.0/(numZones-2);
 			for (int i = 0; i < numZones; i++){
 				if (i == 0){
-					zones.add(new Zone(0, zoneRadius, false, false));
+					zones.add(new Zone(0, zoneRadius+5.0, false, false));
 				}
 				else if (i > 0 && i < (numZones-2)){
-					zones.add(new Zone(zoneRadius*i, zoneRadius*(i+1), false, false));
+					zones.add(new Zone(zoneRadius*i-5.0, zoneRadius*(i+1)+5.0, false, false));
 				}
 				else if (i == (numZones-2)){//make top edge zone
-					zones.add(new Zone(zoneRadius*i, Integer.MAX_VALUE, true, false));
+					zones.add(new Zone(zoneRadius*i-5.0, Integer.MAX_VALUE, true, false));
 				}
 				else{	//final zone, make bottom edge zone
-					zones.add(new Zone(zoneRadius*(i-1), Integer.MAX_VALUE, false, true));
+					zones.add(new Zone(zoneRadius*(i-1)-5.0, Integer.MAX_VALUE, false, true));
 				}
 			}
 			
@@ -59,7 +59,7 @@ public class Player extends sheepdog.sim.Player {
 			//now assign dogs to zone
 			int dogCount = 0;
 			while (dogCount < myDogs.size()){
-				for (int i = zones.size()-1; i >=0; i--){
+				for (int i = zones.size()-1; i >=0&&dogCount< myDogs.size(); i--){
 					myDogs.get(dogCount).setZone(i);
 					dogCount++;
 				}
@@ -100,7 +100,8 @@ public class Player extends sheepdog.sim.Player {
 		System.out.println("FINAL DOG/ZONE PAIRINGS");
 		for (int i = 0; i < myDogs.size(); i++){
 
-			System.out.println("dog #: " + i + " has zone " + myDogs.get(i).getMyZoneNum());
+			int j = i+1;
+			System.out.println("dog #: " + j + " has zone " + myDogs.get(i).getMyZoneNum());
 		}
 
 		//now we need to actually make moves
@@ -116,7 +117,8 @@ public class Player extends sheepdog.sim.Player {
 				return currentDog.moveTowardZone(zones.get(currentDog.getMyZoneNum()));
 		}
 		else{	//get sheep closest to dog within the dog's zone and move it into the next zone
-			return currentDog.getMoveBasedOnZone(sheepToMove, zones.get(currentDog.getMyZoneNum()));
+				System.out.println("dog is getting closest sheep");
+				return currentDog.getMoveBasedOnZone(sheepToMove, zones.get(currentDog.getMyZoneNum()));
 		}
 	
 	}
