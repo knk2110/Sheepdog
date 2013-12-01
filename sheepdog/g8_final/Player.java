@@ -51,6 +51,7 @@ public class Player extends sheepdog.sim.Player {
         this.dogs = dogs;
         this.sheeps = sheeps;
 
+	System.out.println("I am dog " + id + " and my zone is " + dogToZone.get(id));
         /* begin hacky solution to advanced mode */
         if (mode == true) {
             Point[] tmp = new Point[nblacks];
@@ -86,6 +87,16 @@ public class Player extends sheepdog.sim.Player {
         moveLocation = getNextPositionBasedOnZone(id);
         makePointValid(currentDogPoint, moveLocation);
 
+	//todo: if I am sitting on the gate and not moving, get the heck out of the way
+	if (currentDogPoint.x>=50 && currentDogPoint.x<=52 && currentDogPoint.y<=54 && currentDogPoint.y>=46){
+		System.out.println("currently, I am in the way of the gate");
+		if (moveLocation.x == currentDogPoint.x && moveLocation.y == currentDogPoint.y){
+			System.out.println("I am on the gate and not moving--need to get away from the gate!");
+			//just move dog down 2 spaces on Y
+			moveLocation.y -= MAX_SPEED;
+		}
+		
+	}
         return moveLocation;
     }
 
@@ -124,11 +135,14 @@ public class Player extends sheepdog.sim.Player {
             } else if (tier >= sortedSheep.size()) {
                 // If a dog is delivering sheep to the goal and has nothing to deliver, then get it out of the way
                 if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
-                    return Calculator.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
+                    	System.out.println("I am moving toward doghouse!");
+			return Calculator.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
                 } else {
+		    System.out.println("I have nothing to deliver, staying at current position");
                     return currentPosition;
                 }
             }
+	    System.out.println("chasing sheep toward goal");
             return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
         // The dog's zone is currently empty, reassign the dog's zone
         } else {
@@ -138,7 +152,7 @@ public class Player extends sheepdog.sim.Player {
             */
 
             // distribute the dogs more evenly?
-
+ 	    System.out.println("my zone is empty (line 153), trying to reassign!");
             if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                 return currentPosition;
             }
