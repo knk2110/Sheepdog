@@ -70,18 +70,22 @@ public class Dog{
 		
 		double distanceFromZone = Player.computeDistance(currentPoint, zonePoint);
 		if (distanceFromZone <= Player.MAX_SPEED){
-			currentPoint.x += distanceFromZone*(zonePoint.x-currentPoint.x)/distanceFromZone;
-			currentPoint.y += distanceFromZone*(zonePoint.y-currentPoint.y)/distanceFromZone;
+			//currentPoint.x += distanceFromZone*(zonePoint.x-currentPoint.x)/distanceFromZone;
+			//currentPoint.y += distanceFromZone*(zonePoint.y-currentPoint.y)/distanceFromZone;
+			Point nextPoint = new Point(currentPoint.x, currentPoint.y);
+			nextPoint.x += distanceFromZone*(zonePoint.x-currentPoint.x)/distanceFromZone;
+			nextPoint.y += distanceFromZone*(zonePoint.y-currentPoint.y)/distanceFromZone;
 			hasMovedToFirstZone = true;
-			Utils.makePointValid(currentPoint);
-			return currentPoint;
+			Utils.makePointValid(currentPoint, nextPoint);
+			return nextPoint;
 		}
-		currentPoint.x += Player.MAX_SPEED*(zonePoint.x - currentPoint.x)/distanceFromZone;
-		currentPoint.y += Player.MAX_SPEED*(zonePoint.y - currentPoint.y)/distanceFromZone;
-		Utils.makePointValid(currentPoint);
+		Point nextPoint = new Point(currentPoint.x, currentPoint.y);
+		nextPoint.x += Player.MAX_SPEED*(zonePoint.x - currentPoint.x)/distanceFromZone;
+		nextPoint.y += Player.MAX_SPEED*(zonePoint.y - currentPoint.y)/distanceFromZone;
+		Utils.makePointValid(currentPoint, nextPoint);
 		if(currentPoint == zonePoint)
 			hasMovedToFirstZone = true;
-		return currentPoint;
+		return nextPoint;
 	}
 	
 	public Point getMoveBasedOnZone(Point[] sheepToMove, Zone z){
@@ -130,7 +134,7 @@ public class Dog{
         	double angleGapToSheep = Utils.getAngleOfTrajectory(goalPoint, sheepPoint);
         	Point idealLocation = Utils.getMoveInDirection(sheepPoint, angleGapToSheep, 1.0);
         	Point moveLocation = Utils.getMoveTowardPoint(myPoint, idealLocation);
-        	Utils.makePointValid(moveLocation);
+        	//Utils.makePointValid(sheepPoiinmoveLocation);
         	return moveLocation;
 	}
 	

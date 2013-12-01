@@ -111,11 +111,13 @@ public class Utils {
     return undelivered;
   }
 
-    	public static void makePointValid(Point pt) {
-      		if (pt.x > 100) { pt.x = 100; }
-      		else if (pt.x < 0) { pt.x = 0; }
-      		if (pt.y > 100) { pt.y = 100; }
-      		else if (pt.y < 0) { pt.y = 0; }
+    	public static void makePointValid(Point curr, Point dest) {
+      		if (curr.x >50.0 && dest.x < 50.0) { dest.x = 50.0;}
+		else if (curr.x < 50.0 && dest.x > 50.0) { dest.x = 49.99;}
+		if (dest.x > 100) { dest.x = 100; }
+      		else if (dest.x < 0) { dest.x = 0; }
+      		if (dest.y > 100) { dest.y = 100; }
+      		else if (dest.y < 0) { dest.y = 0; }
     	}
 
 
