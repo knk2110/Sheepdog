@@ -14,6 +14,8 @@ public class Player extends sheepdog.sim.Player {
     More zones, different configurations
     How to decide when to move dogs to different zones? Load balancing
 
+
+    // must find a way to split endzone into two zones in the end with not that many sheep
      */
     private int nblacks;
     private boolean mode;
@@ -37,8 +39,15 @@ public class Player extends sheepdog.sim.Player {
 
         Point moveLocation;
 
-        if (zones.isEmpty())
+        // Generate the new configuration and assign dogs to zones. Zones that appear first in the configuration
+        // will have more dogs assigned to them
+        if (zones.isEmpty()) {
             zones = new ZoneConfig().getConfiguration(dogs.length);
+            for (int i = 0; i < dogs.length; i++) {
+                int zoneID = i % (zones.size());
+                dogToZone.put(i, zoneID);
+            }
+        }
 
         this.dogs = dogs;
         this.sheeps = sheeps;
@@ -48,11 +57,6 @@ public class Player extends sheepdog.sim.Player {
         //move dogs through gate
         if (currentDogPoint.x < 50){
             return moveDogTowardGate(currentDogPoint);
-        }
-
-        for (int i = 0; i < dogs.length; i++) {
-            int zoneID = i % (zones.size());
-            dogToZone.put(i, zoneID);
         }
 
         moveLocation = getNextPositionBasedOnZone(id);
@@ -74,44 +78,61 @@ public class Player extends sheepdog.sim.Player {
     }
 
     public Point getNextPositionBasedOnZone(int dogNum){
+        Point currentPosition = dogs[dogNum];
         int zoneNumber = dogToZone.get(dogNum);
         Zone myZone = zones.get(zoneNumber);
 
-        // If there are more than 6 dogs, then there will be multiple dogs will be more than 6 dogs. Therefore we will be assigning
-        // multiple dogs to a zone, and tier determines which sheep they target. Tier = 0 means that they target the farthest sheep in that zone,
-        // tier = 1 means they will get the second farthest sheep, etc.
-        int tier = (int) Math.floor(dogNum / zones.size());
+        /*
+        If there are more dogs than zones, then there will be multiple dogs per zone. Therefore we will be assigning
+        multiple dogs to a zone, and tier determines which sheep they target. Tier = 0 means that they target the farthest sheep in that zone,
+        tier = 1 means they will get the second farthest sheep, etc. To assign tiers we just take all the dogs in the zone and sort them
+        by their ID and then assign sequentially.
+        */
+        ArrayList<Integer> dogsInThisZone = myZone.getDogIndices(dogs);
+        Collections.sort(dogsInThisZone);
 
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
+        int tier = dogsInThisZone.indexOf(dogNum);
 
         if (myZone.hasSheep(this.sheeps)) {
-            if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
-                return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
-            } else {
-                return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
-            }
-        } else { // The dog's zone is currently empty, reassign the dog's zone
-            // Find the zone with the fewest number of sheep that is > 0 and move the dog to that location
-            int zoneWithFewestSheep = 0;
-            int minSheep = sheeps.length;
-
-            for (int i = 0; i < zones.size(); i++) {
-                int numSheep = zones.get(i).numSheep(sheeps);
-                if (numSheep < minSheep && numSheep > 0) {
-                    minSheep = numSheep;
-                    zoneWithFewestSheep = i;
+            if (tier == -1) {
+                tier = 0;
+            } else if (tier >= sortedSheep.size()) {
+                // If a dog is delivering sheep to the goal and has nothing to deliver, then get it out of the way
+                if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
+                    return Calculator.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
                 }
             }
+            return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
+        } else { // The dog's zone is currently empty, reassign the dog's zone
+            // Find the zone with the fewest number of sheep that is > 0 and move the dog to that location
+            // But don't move it to a zone that is a goal zone because that introduces clogging
 
 
-            if (Calculator.pointsEqual(zones.get(zoneWithFewestSheep).goalPoint, Zone.GATE)) {
-                // if the dog is assigned to move to a goal zone, don't do it because it clogs it up
+            /*
+            CURRENTLY DOES NOT WORK, DOGS DON'T LEAVE THEIR ZONE
+             */
+
+            /*
+            if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                 return dogs[dogNum];
-            } else {
-                // resassign the dog's zone and move it towards the goal of the newly decided zone
-                dogToZone.put(dogNum, zoneWithFewestSheep);
-                return Calculator.getMoveTowardPoint(dogs[dogNum], zones.get(zoneWithFewestSheep).getGoal());
             }
+
+            ArrayList<Integer> sortedZones = getNumSheepSortedZones();
+            for (int i = 0; i < sortedZones.size(); i++) {
+                int numSheep = zones.get(sortedZones.get(i)).numSheep(sheeps);
+                if (numSheep > 0 && !Calculator.pointsEqual(zones.get(i).goalPoint, Zone.GATE)) {
+                    Zone zoneToMoveTo = zones.get(i);
+                    dogToZone.put(dogNum, i);
+                    return currentPosition;
+
+//                    // move the dog to the farthest sheep in that zone instead
+//                    sortedSheep = getDistanceSortedIndices(zoneToMoveTo.getGoal(), zoneToMoveTo.getSheepIndices(this.sheeps));
+//                    return Calculator.getMoveTowardPoint(dogs[dogNum], sheeps[sortedSheep.get(tier)]);
+                }
+            }
+            */
+            return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
 		}
     }
 
@@ -160,5 +181,21 @@ public class Player extends sheepdog.sim.Player {
             }
         });
         return sheepToCheck;
+    }
+
+    // Sort the zones by how many sheep they have
+    protected ArrayList<Integer> getNumSheepSortedZones() {
+        ArrayList<Integer> zoneIndices = new ArrayList<Integer>();
+        for (int i = 0; i < zones.size(); i++) {
+            zoneIndices.add(i);
+        }
+
+        Collections.sort(zoneIndices, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer arg0, Integer arg1) {
+                return (int) Math.signum(zones.get(arg0).numSheep(sheeps) - zones.get(arg1).numSheep(sheeps));
+            }
+        });
+        return zoneIndices;
     }
 }

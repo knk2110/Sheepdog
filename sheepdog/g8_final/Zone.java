@@ -41,6 +41,7 @@ public class Zone{
         Zone topMostZone = null;
         double topDistance = 100.0;
 
+
         for (Zone z: zones) {
             if (z.isMiddleZone()) {
                 goalPoint = z.goalPoint;
@@ -58,10 +59,17 @@ public class Zone{
         }
 
         if (zones.length == 2) {
-            upperLeft = leftMostZone.upperLeft;
-            goalPoint = leftMostZone.goalPoint;
-            width = 50.0;
-            height = 33.333;
+            if (Calculator.pointsEqual(zones[0].goalPoint, zones[1].goalPoint)) {
+                upperLeft = topMostZone.upperLeft;
+                goalPoint = topMostZone.goalPoint;
+                width = 25.0;
+                height = 33.333;
+            } else {
+                upperLeft = leftMostZone.upperLeft;
+                goalPoint = leftMostZone.goalPoint;
+                width = 50.0;
+                height = 33.333;
+            }
         } else if (zones.length == 3) {
             upperLeft = topMostZone.upperLeft;
             height = 100.0;
@@ -74,6 +82,10 @@ public class Zone{
         }
 
         return new Zone(upperLeft, goalPoint, width, height);
+    }
+
+    public Point getCenter() {
+        return new Point((upperLeft.x + lowerRight.x) / 2, (upperLeft.y + lowerRight.y) /2);
     }
 
     public boolean isMiddleZone() {

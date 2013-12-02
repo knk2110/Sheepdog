@@ -10,7 +10,7 @@ public class ZoneConfig {
     final static double ZONE_H_LENGTH = 25.0;
     final static double ZONE_V_LENGTH = 33.333;
 
-    final static double ZONE_GOAL_V_LENGTH = ZONE_V_LENGTH / 2;
+    final static double ZONE_V_SMALL_LENGTH = ZONE_V_LENGTH / 2;
 
     Zone Z1;
     Zone Z2;
@@ -21,6 +21,8 @@ public class ZoneConfig {
 
     Zone ZGOAL_TOP;
     Zone ZGOAL_BOT;
+    Zone ZMID_TOP;
+    Zone ZMID_BOT;
 
     /*
     Zones are | 1 | 2 |
@@ -39,10 +41,13 @@ public class ZoneConfig {
         Point ZGOAL_TOP_GOAL= new Point(50, 50); //The gap location
 
         Point ZGOAL_BOT_UL = new Point(50, 50);
-        Point ZGOAL_BOT_GOAL= new Point(50, 50); //The gap location
+        Point ZGOAL_BOT_GOAL= new Point(50, 50);
 
-        Point Z4_UL = new Point(75, 33.333);
-        Point Z4_UL_GOAL= new Point(73, 50);
+        Point ZMID_TOP_UL = new Point(75, 33.333);
+        Point ZMID_TOP_GOAL= new Point(73, 50);
+
+        Point ZMID_BOT_UL = new Point(75, 50);
+        Point ZMID_BOT_GOAL= new Point(73, 50);
 
         Point Z5_UL = new Point(50, 66.666);
         Point Z5_UL_GOAL= new Point(62.5, 65);
@@ -52,10 +57,12 @@ public class ZoneConfig {
 
         this.Z1 = new Zone(Z1_UL, Z1_UL_GOAL, ZONE_H_LENGTH, ZONE_V_LENGTH);
         this.Z2 = new Zone(Z2_UL, Z2_UL_GOAL, ZONE_H_LENGTH, ZONE_V_LENGTH);
-        this.ZGOAL_TOP = new Zone(ZGOAL_TOP_UL, ZGOAL_TOP_GOAL, ZONE_H_LENGTH, ZONE_GOAL_V_LENGTH);
-        this.ZGOAL_BOT = new Zone(ZGOAL_BOT_UL, ZGOAL_BOT_GOAL, ZONE_H_LENGTH, ZONE_GOAL_V_LENGTH);
+        this.ZGOAL_TOP = new Zone(ZGOAL_TOP_UL, ZGOAL_TOP_GOAL, ZONE_H_LENGTH, ZONE_V_SMALL_LENGTH);
+        this.ZGOAL_BOT = new Zone(ZGOAL_BOT_UL, ZGOAL_BOT_GOAL, ZONE_H_LENGTH, ZONE_V_SMALL_LENGTH);
+        this.ZMID_TOP = new Zone(ZMID_TOP_UL, ZMID_TOP_GOAL, ZONE_H_LENGTH, ZONE_V_SMALL_LENGTH);
+        this.ZMID_BOT = new Zone(ZMID_BOT_UL, ZMID_BOT_GOAL, ZONE_H_LENGTH, ZONE_V_SMALL_LENGTH);
         this.Z3 = Zone.addZones(ZGOAL_TOP, ZGOAL_BOT);
-        this.Z4 = new Zone(Z4_UL, Z4_UL_GOAL, ZONE_H_LENGTH, ZONE_V_LENGTH);
+        this.Z4 = Zone.addZones(ZMID_TOP, ZMID_BOT);
         this.Z5 = new Zone(Z5_UL, Z5_UL_GOAL, ZONE_H_LENGTH, ZONE_V_LENGTH);
         this.Z6 = new Zone(Z6_UL, Z6_UL_GOAL, ZONE_H_LENGTH, ZONE_V_LENGTH);
     }
@@ -75,16 +82,24 @@ public class ZoneConfig {
         } else if (numDogs == 3) {
             Zone middle = Zone.addZones(Z3, Z4);
             Zone top = Zone.addZones(Z1, Z2);
-            Zone bottom = Zone.addZones(Z5, Z6);
-            config.addAll(Arrays.asList(middle, top, bottom));
-        } else if (numDogs == 4 || numDogs == 5) {
+            Zone bot = Zone.addZones(Z5, Z6);
+            config.addAll(Arrays.asList(middle, top, bot));
+        } else if (numDogs == 4) {
             Zone top = Zone.addZones(Z1, Z2);
-            Zone bottom = Zone.addZones(Z5, Z6);
-            config.addAll(Arrays.asList(Z3, Z4, top, bottom));
+            Zone bot = Zone.addZones(Z5, Z6);
+            config.addAll(Arrays.asList(Z4, Z3, top, bot));
+        } else if (numDogs == 5) {
+            Zone top = Zone.addZones(Z1, Z2);
+            Zone bot = Zone.addZones(Z5, Z6);
+            config.addAll(Arrays.asList(Z4, ZGOAL_TOP, ZGOAL_BOT, top, bot));
         } else if (numDogs == 6) {
-            config.addAll(Arrays.asList(Z3, Z4, Z1, Z2, Z5, Z6));
-        } else if (numDogs >= 7) {
-            config.addAll(Arrays.asList(ZGOAL_TOP, ZGOAL_BOT, Z4, Z1, Z2, Z5, Z6));
+            Zone top = Zone.addZones(Z1, Z2);
+            Zone bot = Zone.addZones(Z5, Z6);
+            config.addAll(Arrays.asList(ZMID_BOT, ZMID_TOP, ZGOAL_TOP, ZGOAL_BOT, top, bot));
+        } else if (numDogs == 7) {
+            config.addAll(Arrays.asList(Z4, ZGOAL_TOP, ZGOAL_BOT, Z2, Z6, Z1, Z5));
+        } else if (numDogs >= 8) {
+            config.addAll(Arrays.asList(ZMID_BOT, ZMID_TOP, ZGOAL_TOP, ZGOAL_BOT, Z2, Z6, Z1, Z5));
         }
         return config;
     }
