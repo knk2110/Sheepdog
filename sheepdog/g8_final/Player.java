@@ -114,9 +114,9 @@ public class Player extends sheepdog.sim.Player {
         */
         ArrayList<Integer> dogsInThisZone = myZone.getDogIndices(dogs);
         Collections.sort(dogsInThisZone);
+        int tier = dogsInThisZone.indexOf(dogNum);
 
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
-        int tier = dogsInThisZone.indexOf(dogNum);
 
         if (myZone.hasSheep(this.sheeps)) {
             if (tier == -1) {
@@ -130,34 +130,32 @@ public class Player extends sheepdog.sim.Player {
                 }
             }
             return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
-        } else { // The dog's zone is currently empty, reassign the dog's zone
-            // Find the zone with the fewest number of sheep that is > 0 and move the dog to that location
-            // But don't move it to a zone that is a goal zone because that introduces clogging
-
-
+        // The dog's zone is currently empty, reassign the dog's zone
+        } else {
             /*
-            CURRENTLY DOES NOT WORK, DOGS DON'T LEAVE THEIR ZONE
-             */
+            Find the zone with the fewest number of sheep that is > 0 and move the dog to that location
+            But don't move it to a zone that is a goal zone because that introduces clogging
+            */
 
-            /*
+            // distribute the dogs more evenly?
+
             if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
-                return dogs[dogNum];
+                return currentPosition;
             }
 
             ArrayList<Integer> sortedZones = getNumSheepSortedZones();
             for (int i = 0; i < sortedZones.size(); i++) {
-                int numSheep = zones.get(sortedZones.get(i)).numSheep(sheeps);
-                if (numSheep > 0 && !Calculator.pointsEqual(zones.get(i).goalPoint, Zone.GATE)) {
-                    Zone zoneToMoveTo = zones.get(i);
-                    dogToZone.put(dogNum, i);
-                    return currentPosition;
+                Zone tmpZone = zones.get(sortedZones.get(i));
+                if (Calculator.pointsEqual(tmpZone.goalPoint, Zone.GATE)) {
+                    continue;
+                }
 
-//                    // move the dog to the farthest sheep in that zone instead
-//                    sortedSheep = getDistanceSortedIndices(zoneToMoveTo.getGoal(), zoneToMoveTo.getSheepIndices(this.sheeps));
-//                    return Calculator.getMoveTowardPoint(dogs[dogNum], sheeps[sortedSheep.get(tier)]);
+                int numSheep = zones.get(sortedZones.get(i)).numSheep(sheeps);
+                if (numSheep > 0) {
+                    dogToZone.put(dogNum, sortedZones.get(i));
+                    return Calculator.getMoveTowardPoint(dogs[dogNum], tmpZone.getCenter());
                 }
             }
-            */
             return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
 		}
     }
