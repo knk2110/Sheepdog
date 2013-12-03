@@ -13,9 +13,7 @@ public class Player extends sheepdog.sim.Player {
 
     More zones, different configurations
     How to decide when to move dogs to different zones? Load balancing
-
-
-    // must find a way to split endzone into two zones in the end with not that many sheep
+    Find a way to split zones into smaller zones dynamically
      */
     private int nblacks;
     private boolean mode;
@@ -38,6 +36,7 @@ public class Player extends sheepdog.sim.Player {
                       Point[] sheeps) {
 
         Point moveLocation;
+        Point currentDogPoint = dogs[id];
 
         // Generate the new configuration and assign dogs to zones. Zones that appear first in the configuration
         // will have more dogs assigned to them
@@ -52,7 +51,32 @@ public class Player extends sheepdog.sim.Player {
         this.dogs = dogs;
         this.sheeps = sheeps;
 
-        Point currentDogPoint = dogs[id];
+        /* begin hacky solution to advanced mode */
+        if (mode == true) {
+            Point[] tmp = new Point[nblacks];
+            for (int i = 0; i < nblacks; i++) {
+                tmp[i] = sheeps[i];
+            }
+            this.sheeps = tmp;
+        }
+
+        // bring back all the white sheep
+        ArrayList<Integer> undeliveredBlackSheep = Calculator.undeliveredBlackSheep(sheeps, nblacks);
+        if (mode == true && undeliveredBlackSheep.size() == 0) {
+            this.sheeps = sheeps;
+            ArrayList<Integer> undeliveredWhiteSheep = Calculator.undeliveredWhiteSheepAdvanced(sheeps, nblacks);
+            if (dogs[id].x > 50.2) {
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(50.1, 50));
+            } else if (Calculator.pointsEqual(dogs[id], new Point(50.1, 50))) {
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(30, 50));
+            }
+            if (id < undeliveredWhiteSheep.size()) {
+                return chaseSheepTowardGoal(id, undeliveredWhiteSheep.get(id), Zone.GATE);
+            } else {
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(0, 50));
+            }
+        }
+        /* end hacky solution to advanced mode */
 
         //move dogs through gate
         if (currentDogPoint.x < 50){
@@ -101,6 +125,8 @@ public class Player extends sheepdog.sim.Player {
                 // If a dog is delivering sheep to the goal and has nothing to deliver, then get it out of the way
                 if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                     return Calculator.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
+                } else {
+                    return currentPosition;
                 }
             }
             return chaseSheepTowardGoal(dogNum, sortedSheep.get(tier), myZone.getGoal());
