@@ -85,11 +85,11 @@ public class Player extends sheepdog.sim.Player {
         }
 
         moveLocation = getNextPositionBasedOnZone(id);
-        makePointValid(currentDogPoint, moveLocation);
+        moveLocation = makePointValid(currentDogPoint, moveLocation);
 
 	//todo: if I am sitting on the gate and not moving, get the heck out of the way
 	if (currentDogPoint.x>=50 && currentDogPoint.x<=52 && currentDogPoint.y<=54 && currentDogPoint.y>=46){
-		System.out.println("currently, I am in the way of the gate");
+	//	System.out.println("currently, I am in the way of the gate");
 		if (moveLocation.x == currentDogPoint.x && moveLocation.y == currentDogPoint.y){
 			System.out.println("I am on the gate and not moving--need to get away from the gate!");
 			//just move dog down 2 spaces on Y
@@ -113,10 +113,11 @@ public class Player extends sheepdog.sim.Player {
     }
 
     public Point getNextPositionBasedOnZone(int dogNum){
-        Point currentPosition = dogs[dogNum];
+        System.out.println("getting next position based on zone");
+	Point currentPosition = dogs[dogNum];
         int zoneNumber = dogToZone.get(dogNum);
         Zone myZone = zones.get(zoneNumber);
-
+	System.out.println("got my zone");
         /*
         If there are more dogs than zones, then there will be multiple dogs per zone. Therefore we will be assigning
         multiple dogs to a zone, and tier determines which sheep they target. Tier = 0 means that they target the farthest sheep in that zone,
@@ -126,10 +127,8 @@ public class Player extends sheepdog.sim.Player {
         ArrayList<Integer> dogsInThisZone = myZone.getDogIndices(dogs);
         Collections.sort(dogsInThisZone);
         int tier = dogsInThisZone.indexOf(dogNum);
-
-	System.out.println(myZone.getGoal());
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
-
+	System.out.println("got sorted sheep");
         if (myZone.hasSheep(this.sheeps)) {
             if (tier == -1) {
                 tier = 0;
@@ -154,11 +153,13 @@ public class Player extends sheepdog.sim.Player {
 
             // distribute the dogs more evenly?
  	    System.out.println("my zone is empty (line 153), trying to reassign!");
-            if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
-                return currentPosition;
+            
+	    if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
+                System.out.println("My zone is the zone closest to the goal, not reassigning. But I am not moving, so this is bad--TO FIX!");
+		return currentPosition;
             }
 
-            ArrayList<Integer> sortedZones = getNumSheepSortedZones();
+            /*ArrayList<Integer> sortedZones = getNumSheepSortedZones();
             for (int i = 0; i < sortedZones.size(); i++) {
                 Zone tmpZone = zones.get(sortedZones.get(i));
                 if (Calculator.pointsEqual(tmpZone.goalPoint, Zone.GATE)) {
@@ -170,8 +171,24 @@ public class Player extends sheepdog.sim.Player {
                     dogToZone.put(dogNum, sortedZones.get(i));
                     return Calculator.getMoveTowardPoint(dogs[dogNum], tmpZone.getCenter());
                 }
-            }
-            return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
+            }*/
+		//NEW: we always want a dog to move toward a middle zone if its zone is empty. here, we hard code what the dog should do based on what its zone is
+		int totalZones = zones.size();
+		if (totalZones == 1){
+			System.out.println("Code should never get here unless we have completed the scenario");
+		}
+		else if (totalZones == 2){
+			if (zoneNumber == 1){
+				dogToZone.put(dogNum, 0);
+				System.out.println("I have zone 1, now taking zone 0"); 
+			}
+			else{
+				System.out.println("I am in zone 0 and it is empty, but I will have sheep soon so I am not moving!");
+				return currentPosition;
+			}
+		}
+		System.out.println("finished else...");
+           	 return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
 		}
     }
 
@@ -198,7 +215,7 @@ public class Player extends sheepdog.sim.Player {
         return targetSheep;
     }
 
-    public static void makePointValid(Point current, Point destination) {
+    public static Point makePointValid(Point current, Point destination) {
         // prevent crossing the fence
         if (current.x > 50.0 && destination.x < 50.0) {
             destination.x = 50.01;
@@ -209,6 +226,8 @@ public class Player extends sheepdog.sim.Player {
         else if (destination.x < 0) { destination.x = 0; }
         if (destination.y > 100) { destination.y = 100; }
         else if (destination.y < 0) { destination.y = 0; }
+	
+	return destination;
     }
 
     // Sorts the list of sheep based on their distance away from pt, farthest first
