@@ -24,7 +24,7 @@ sheepdog/manual/Player.class: sheepdog/manual/*.java sheepdog/sim/Player.java sh
 
 .PHONY: rungui
 rungui: all
-	java sheepdog.sim.Sheepdog g8_v8 3 50 20 true true
+	java sheepdog.sim.Sheepdog g8_final 3 10 5 false true
 
 
 .PHONY: clean
