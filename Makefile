@@ -1,4 +1,4 @@
-all: sheepdog/sim/Sheepdog.class sheepdog/sim/Point.class sheepdog/sim/Player.class sheepdog/manual/Player.class sheepdog/g8_v1/Player.class sheepdog/g8_v2/Player.class sheepdog/g8_v3/Player.class
+all: sheepdog/sim/Sheepdog.class sheepdog/sim/Point.class sheepdog/sim/Player.class sheepdog/manual/Player.class sheepdog/g8_final/Player.class
 
 sheepdog/sim/Point.class: sheepdog/sim/Point.java
 	javac $^
@@ -9,13 +9,10 @@ sheepdog/sim/Player.class: sheepdog/sim/Player.java sheepdog/sim/Point.java
 sheepdog/sim/Sheepdog.class: sheepdog/sim/Player.java sheepdog/sim/Point.java sheepdog/sim/Sheepdog.java
 	javac $^
 
-sheepdog/g8_v1/Player.class: sheepdog/g8_v1/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
+sheepdog/g8_final/Player.class: sheepdog/g8_final/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
 	javac $^
 
-sheepdog/g8_v2/Player.class: sheepdog/g8_v2/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
-	javac $^
-
-sheepdog/g8_v3/Player.class: sheepdog/g8_v3/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
+sheepdog/g8_v8/Player.class: sheepdog/g8_v8/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
 	javac $^
 
 sheepdog/manual/Player.class: sheepdog/manual/*.java sheepdog/sim/Player.java sheepdog/sim/Point.java
@@ -24,13 +21,12 @@ sheepdog/manual/Player.class: sheepdog/manual/*.java sheepdog/sim/Player.java sh
 
 .PHONY: rungui
 rungui: all
-	java sheepdog.sim.Sheepdog g8_final 3 10 5 false true
+	java sheepdog.sim.Sheepdog g8_final 2 10 5 false true
 
 
 .PHONY: clean
 clean:
 	$(RM) sheepdog/sim/*.class
 	$(RM) sheepdog/manual/*.class
-	$(RM) sheepdog/g8_v1/*.class
-	$(RM) sheepdog/g8_v2/*.class
-	$(RM) sheepdog/g8_v3/*.class
+	$(RM) sheepdog/g8_final/*.class
+	$(RM) sheepdog/g8_v8/*.class
