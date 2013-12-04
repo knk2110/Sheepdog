@@ -187,6 +187,427 @@ public class Player extends sheepdog.sim.Player {
 				return currentPosition;
 			}
 		}
+		else if (totalZones == 3){
+			if (zoneNumber == 1 || zoneNumber == 2){
+				dogToZone.put(dogNum, 0);
+				System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+			}
+			else{
+				System.out.println("I am in zone 0 and it is empty, but I will have sheep soon!");
+				return currentPosition;
+			}
+		}
+		else if (totalZones == 4){
+			if (zoneNumber != 1){
+				dogToZone.put(dogNum, 1);
+				System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+			}
+			else {
+				System.out.println("I am in zone 0 and it is empty, but I will have sheep soon!");
+				return currentPosition;
+			}	
+		}
+		else if (totalZones == 5){
+			if (zoneNumber == 0){
+				if (zones.get(1).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 1);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+				}
+				else if (zones.get(2).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 2);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+				}
+				else {
+					System.out.println("I am in zone 0 and it is empty, but so are the top and bottom goal zones. Somewhere will have sheep soon!");
+					return currentPosition;
+				}
+
+			}
+			else if (zoneNumber == 1){
+				if (zones.get(3).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 3);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+				}
+				else if (zones.get(2).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 2);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+				}
+				else {
+					System.out.println("I am in the top goal zone and it is empty, but so are 3 and 2. Somewhere will have sheep soon!");
+					return currentPosition;
+				}
+			}
+			else if (zoneNumber == 2){
+				if (zones.get(4).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 4);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 4");
+				}
+				else if (zones.get(2).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 2);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+				}
+				else {
+					System.out.println("I am in the bottomgoal zone and it is empty, but so are 4 and 2. Somewhere will have sheep soon!");
+					return currentPosition;
+				}
+			}
+			else if (zoneNumber == 3){
+				if (zones.get(0).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 0);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+				}
+				else if (zones.get(1).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 1);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+				}
+				else {
+					System.out.println("I am in zone 3 and it is empty but so are 0 and 1. Somewhere will have sheep soon!");
+					return currentPosition;
+				}
+			}
+			else if (zoneNumber == 4){
+				if (zones.get(0).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 0);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+				}
+				else if (zones.get(2).hasSheep(this.sheeps)){
+					dogToZone.put(dogNum, 2);
+					System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+				}
+				else {
+					System.out.println("I am zone 4 and it is empty but so are 0 and 2. Somewhere will have sheep soon!");
+					return currentPosition;
+				}
+			}
+		}
+		else if (totalZones == 6){
+				if (zoneNumber == 0){
+					if (zones.get(3).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 3);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+					
+					}
+					else if (zones.get(2).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 2);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+					}
+					else if (zones.get(1).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 1);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+					}
+					else {
+						System.out.println("I am zone 0 and it is empty but so are 1, 3 and 2. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (zoneNumber == 1){
+					if (zones.get(2).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 2);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+					
+					}
+					else if (zones.get(3).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 3);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+					}
+					else if (zones.get(0).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 0);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+					}
+					else {
+						System.out.println("I am zone 1 and it is empty but so are 3, 0 and 2. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (zoneNumber == 2){
+					if (zones.get(3).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 3);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+					
+					}
+					else {
+						System.out.println("I am zone 2 and it is empty but so is 3. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (zoneNumber == 3){
+					if (zones.get(2).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 2);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+					
+					}
+					else {
+						System.out.println("I am zone 3 and it is empty but so is 2. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (zoneNumber == 4){
+					if (zones.get(2).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 2);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+					
+					}
+					else if (zones.get(1).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 1);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+					}
+					else if (zones.get(3).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 3);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+					}
+					else {
+						System.out.println("I am zone 4 and it is empty but so are 3, 1 and 2. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (zoneNumber == 5){
+					if (zones.get(3).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 3);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+					
+					}
+					else if (zones.get(0).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 0);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+					}
+					else if (zones.get(2).hasSheep(this.sheeps)){
+						dogToZone.put(dogNum, 2);
+						System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+					}
+					else {
+						System.out.println("I am zone 5 and it is empty but so are 3, 0 and 2. Somewhere will have sheep soon!");
+						return currentPosition;
+					}
+				}
+				else if (totalZones == 7){
+					if (zoneNumber == 0){
+						if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						
+						}
+						else if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+	
+						else {
+							System.out.println("I am zone 0 and it is empty but so are 1 and 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 1){
+						if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+	
+						else {
+							System.out.println("I am zone 1 and it is empty but so is 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 2){
+						if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						}
+	
+						else {
+							System.out.println("I am zone 2 and it is empty but so is 1. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					
+					else if (zoneNumber == 3){
+						if (zones.get(0).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 0);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+						}
+						else if (zones.get(5).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 5);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 5");
+						}
+						else {
+							System.out.println("I am zone 3 and it is empty but so are 0 and 5. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 4){
+						if (zones.get(0).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 0);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+						}
+						else if (zones.get(6).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 6);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 6");
+						}
+						else {
+							System.out.println("I am zone 4 and it is empty but so are 0 and 6. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 5){
+						if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						}
+						else if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else {
+							System.out.println("I am zone 5 and it is empty but so are 5, 3, and 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 6){
+						if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else if (zones.get(4).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 4);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 4");
+						}
+						else if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						}
+						else {
+							System.out.println("I am zone 6 and it is empty but so are 4, 2, and 1. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+				}
+				else {//total zones > 7
+					if (zoneNumber == 0){
+						if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						}
+						else if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else {
+							System.out.println("I am zone 0 and it is empty but so are 1, 3, and 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 1){
+						if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else if (zones.get(0).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 0);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+						}
+						else if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else {
+							System.out.println("I am zone 1 and it is empty but so are 0, 3, and 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 2){
+						if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else {
+							System.out.println("I am zone 2 and it is empty but so is 3. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 3){
+						if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else {
+							System.out.println("I am zone 3 and it is empty but so is 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 4){
+						if (zones.get(1).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 1);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 1");
+						}
+						else if (zones.get(6).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 6);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 6");
+						}
+						else if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else {
+							System.out.println("I am zone 4 and it is empty but so are 1, 6, and 2. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 5){
+						if (zones.get(0).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 0);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 0");
+						}
+						else if (zones.get(7).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 7);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 7");
+						}
+						else if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else {
+							System.out.println("I am zone 5 and it is empty but so are 7,3,0. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else if (zoneNumber == 6){
+						if (zones.get(2).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 2);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 2");
+						}
+						else if (zones.get(4).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 4);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 4");
+						}
+						else {
+							System.out.println("I am zone 6 and it is empty but so are 2,4. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+					else{
+						if (zones.get(3).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 3);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 3");
+						}
+						else if (zones.get(5).hasSheep(this.sheeps)){
+							dogToZone.put(dogNum, 5);
+							System.out.println("I have zone " + zoneNumber + ", now taking zone 5");
+						}
+						else {
+							System.out.println("I am zone 5 and it is empty but so are 3,7. Somewhere will have sheep soon!");
+							return currentPosition;
+						}
+					}
+				}
+		}
+		
 		System.out.println("finished else...");
            	 return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
 		}
