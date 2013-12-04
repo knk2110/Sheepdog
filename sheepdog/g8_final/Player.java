@@ -129,7 +129,12 @@ public class Player extends sheepdog.sim.Player {
         ArrayList<Integer> dogsInThisZone = myZone.getDogIndices(dogs);
         Collections.sort(dogsInThisZone);
         int tier = dogsInThisZone.indexOf(dogNum);
-        ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
+        ArrayList<Integer> sortedSheep = getDistanceSortedIndices(currentPosition/*myZone.getGoal()*/, myZone.getSheepIndices(this.sheeps));
+	System.out.println("sheeps closest to me, in order: " );	
+	for (int i = 0; i < sortedSheep.size(); i++){
+		int currentIndex = sortedSheep.get(i);
+		System.out.println("sheep at: " + this.sheeps[currentIndex].x + ", " + this.sheeps[currentIndex].y + "dist- " + Utils.dist(currentPosition, this.sheeps[currentIndex]));
+	}
 	//System.out.println("got sorted sheep");
 	
 		//NEW: if the dog's original zone is different than its current zone, and the dog's original zone is not empty, dog should be reassigned to original zone
@@ -672,10 +677,14 @@ public class Player extends sheepdog.sim.Player {
         Collections.sort(sheepToCheck, new Comparator<Integer>() {
             @Override
             public int compare(Integer arg0, Integer arg1) {
-                return (int) Math.signum(Utils.dist(sheeps[arg1], pt) - Utils.dist(sheeps[arg0], pt));
+                return (int) (-1.0*Math.signum(Utils.dist(sheeps[arg1], pt) - Utils.dist(sheeps[arg0], pt)));
             }
         });
-        return sheepToCheck;
+        /*System.out.println("sheep, in order closest to me:");
+	for (int i = 0; i < sheepToCheck.size();i++){
+		System.out.println("sheep at position " + sheepToCheck.get(i).x + ", " + sheepToCheck.get(i).y);
+	}*/
+	return sheepToCheck;
     }
 
     // Sort the zones by how many sheep they have
