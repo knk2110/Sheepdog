@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import sheepdog.sim.Point;
 
-public class Calculator {
+public class Utils {
   public static final double RUN_DISTANCE = 2.0;
   public static final double WALK_DISTANCE = 10.0;
   public static final double FIELD_SIZE = 100.0;

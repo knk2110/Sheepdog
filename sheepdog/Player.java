@@ -64,19 +64,19 @@ public class Player extends sheepdog.sim.Player {
         }
 
         // bring back all the white sheep
-        ArrayList<Integer> undeliveredBlackSheep = Utils.undeliveredBlackSheep(sheeps, nblacks);
+        ArrayList<Integer> undeliveredBlackSheep = Calculator.undeliveredBlackSheep(sheeps, nblacks);
         if (mode == true && undeliveredBlackSheep.size() == 0) {
             this.sheeps = sheeps;
-            ArrayList<Integer> undeliveredWhiteSheep = Utils.undeliveredWhiteSheepAdvanced(sheeps, nblacks);
+            ArrayList<Integer> undeliveredWhiteSheep = Calculator.undeliveredWhiteSheepAdvanced(sheeps, nblacks);
             if (dogs[id].x > 50.2) {
-                return Utils.getMoveTowardPoint(dogs[id], new Point(50.1, 50));
-            } else if (Utils.pointsEqual(dogs[id], new Point(50.1, 50))) {
-                return Utils.getMoveTowardPoint(dogs[id], new Point(30, 50));
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(50.1, 50));
+            } else if (Calculator.pointsEqual(dogs[id], new Point(50.1, 50))) {
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(30, 50));
             }
             if (id < undeliveredWhiteSheep.size()) {
                 return chaseSheepTowardGoal(id, undeliveredWhiteSheep.get(id), Zone.GATE);
             } else {
-                return Utils.getMoveTowardPoint(dogs[id], new Point(0, 50));
+                return Calculator.getMoveTowardPoint(dogs[id], new Point(0, 50));
             }
         }
         /* end hacky solution to advanced mode */
@@ -103,7 +103,7 @@ public class Player extends sheepdog.sim.Player {
     }
 
     public Point moveDogTowardGate(Point dogPoint) {
-        double distanceFromGate = Utils.dist(dogPoint, Zone.GATE);
+        double distanceFromGate = Calculator.dist(dogPoint, Zone.GATE);
         if (distanceFromGate<MAX_SPEED){
             dogPoint.x += distanceFromGate*(Zone.GATE.x-dogPoint.x)/distanceFromGate;
             dogPoint.y += distanceFromGate*(Zone.GATE.y-dogPoint.y)/distanceFromGate;
@@ -149,9 +149,9 @@ public class Player extends sheepdog.sim.Player {
                 tier = 0;
             } else if (tier >= sortedSheep.size()) {
                 // If a dog is delivering sheep to the goal and has nothing to deliver, then get it out of the way
-                if (Utils.pointsEqual(myZone.goalPoint, Zone.GATE)) {
+                if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                     	System.out.println("I am moving toward doghouse!");
-			return Utils.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
+			return Calculator.getMoveTowardPoint(currentPosition, Zone.DOGHOUSE);
                 } else {
 		    System.out.println("I have nothing to deliver, staying at current position");
                     return currentPosition;
@@ -169,7 +169,7 @@ public class Player extends sheepdog.sim.Player {
             // distribute the dogs more evenly?
  	    System.out.println("my zone is empty (line 153), trying to reassign!");
             
-	    if (Utils.pointsEqual(myZone.goalPoint, Zone.GATE)) {
+	    if (Calculator.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                 System.out.println("My zone is the zone closest to the goal, not reassigning. But I am not moving, so this is bad--TO FIX!");
 		return currentPosition;
             }
@@ -177,14 +177,14 @@ public class Player extends sheepdog.sim.Player {
             /*ArrayList<Integer> sortedZones = getNumSheepSortedZones();
             for (int i = 0; i < sortedZones.size(); i++) {
                 Zone tmpZone = zones.get(sortedZones.get(i));
-                if (Utils.pointsEqual(tmpZone.goalPoint, Zone.GATE)) {
+                if (Calculator.pointsEqual(tmpZone.goalPoint, Zone.GATE)) {
                     continue;
                 }
 
                 int numSheep = zones.get(sortedZones.get(i)).numSheep(sheeps);
                 if (numSheep > 0) {
                     dogToZone.put(dogNum, sortedZones.get(i));
-                    return Utils.getMoveTowardPoint(dogs[dogNum], tmpZone.getCenter());
+                    return Calculator.getMoveTowardPoint(dogs[dogNum], tmpZone.getCenter());
                 }
             }*/
 		//NEW: we always want a dog to move toward a middle zone if its zone is empty. here, we hard code what the dog should do based on what its zone is
@@ -394,7 +394,6 @@ public class Player extends sheepdog.sim.Player {
 						return currentPosition;
 					}
 				}
-			}	
 				else if (totalZones == 7){
 					if (zoneNumber == 0){
 						if (zones.get(1).hasSheep(this.sheeps)){
@@ -625,8 +624,8 @@ public class Player extends sheepdog.sim.Player {
 		}
 		
 		System.out.println("finished else...");
-           	 return Utils.getMoveTowardPoint(currentPosition, myZone.getCenter());
-		
+           	 return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
+		}
     }
 
     public Point chaseSheepTowardGoal(int dogNum, int sheepNum, Point goal) {
@@ -634,20 +633,20 @@ public class Player extends sheepdog.sim.Player {
         Point sheepPoint = sheeps[sheepNum];
         sheepPoint = anticipateSheepMovement(dogPoint, sheepPoint);
 
-        double angleGapToSheep = Utils.getAngleOfTrajectory(goal, sheepPoint);
-        Point idealLocation = Utils.getMoveInDirection(sheepPoint, angleGapToSheep, 1.0);
-        Point moveLocation = Utils.getMoveTowardPoint(dogPoint, idealLocation);
+        double angleGapToSheep = Calculator.getAngleOfTrajectory(goal, sheepPoint);
+        Point idealLocation = Calculator.getMoveInDirection(sheepPoint, angleGapToSheep, 1.0);
+        Point moveLocation = Calculator.getMoveTowardPoint(dogPoint, idealLocation);
 
         return moveLocation;
    }
 
     private Point anticipateSheepMovement(Point me, Point targetSheep) {
-        double angleDogToSheep = Utils.getAngleOfTrajectory(me, targetSheep);
-        if (Utils.withinRunDistance(targetSheep, me)) {
-            targetSheep = Utils.getMoveInDirection(targetSheep, angleDogToSheep, 1.0/*SHEEP_RUN_SPEED*/);
+        double angleDogToSheep = Calculator.getAngleOfTrajectory(me, targetSheep);
+        if (Calculator.withinRunDistance(targetSheep, me)) {
+            targetSheep = Calculator.getMoveInDirection(targetSheep, angleDogToSheep, 1.0/*SHEEP_RUN_SPEED*/);
         }
-        else if (Utils.withinWalkDistance(targetSheep, me)) {
-            targetSheep = Utils.getMoveInDirection(targetSheep, angleDogToSheep, .1 /*sheep walk*/);
+        else if (Calculator.withinWalkDistance(targetSheep, me)) {
+            targetSheep = Calculator.getMoveInDirection(targetSheep, angleDogToSheep, .1 /*sheep walk*/);
         }
         return targetSheep;
     }
@@ -672,7 +671,7 @@ public class Player extends sheepdog.sim.Player {
         Collections.sort(sheepToCheck, new Comparator<Integer>() {
             @Override
             public int compare(Integer arg0, Integer arg1) {
-                return (int) Math.signum(Utils.dist(sheeps[arg1], pt) - Utils.dist(sheeps[arg0], pt));
+                return (int) Math.signum(Calculator.dist(sheeps[arg1], pt) - Calculator.dist(sheeps[arg0], pt));
             }
         });
         return sheepToCheck;

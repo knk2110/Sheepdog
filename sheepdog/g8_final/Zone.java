@@ -59,7 +59,7 @@ public class Zone{
         }
 
         if (zones.length == 2) {
-            if (Calculator.pointsEqual(zones[0].goalPoint, zones[1].goalPoint)) {
+            if (Utils.pointsEqual(zones[0].goalPoint, zones[1].goalPoint)) {
                 upperLeft = topMostZone.upperLeft;
                 goalPoint = topMostZone.goalPoint;
                 width = 25.0;
@@ -90,7 +90,7 @@ public class Zone{
     }
 
     public boolean isMiddleZone() {
-        if (Calculator.pointsEqual(this.goalPoint, GATE))
+        if (Utils.pointsEqual(this.goalPoint, GATE))
             return true;
         return false;
     }
