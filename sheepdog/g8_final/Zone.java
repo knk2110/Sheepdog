@@ -74,6 +74,7 @@ public class Zone{
             upperLeft = topMostZone.upperLeft;
             height = 100.0;
             width = 33.333;
+	    goalPoint = zones[1].goalPoint; //new line	
         } else if (zones.length == 6) {
             upperLeft = new Point(50, 0);
             goalPoint = new Point(50, 50);
