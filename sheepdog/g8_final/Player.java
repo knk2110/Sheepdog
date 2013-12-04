@@ -24,6 +24,7 @@ public class Player extends sheepdog.sim.Player {
     private Point[] sheeps;
 
     ArrayList<Zone> zones= new ArrayList<Zone>();
+    HashMap<Integer, Integer> originalDogToZone = new HashMap<Integer, Integer>();
     HashMap<Integer, Integer> dogToZone = new HashMap<Integer, Integer>();
 
     public void init(int nblacks, boolean mode) {
@@ -45,6 +46,7 @@ public class Player extends sheepdog.sim.Player {
             for (int i = 0; i < dogs.length; i++) {
                 int zoneID = i % (zones.size());
                 dogToZone.put(i, zoneID);
+		originalDogToZone.put(i, zoneID);	//this hash map keeps track of original assignments. is important for zone reassignment.
             }
         }
 
@@ -113,11 +115,11 @@ public class Player extends sheepdog.sim.Player {
     }
 
     public Point getNextPositionBasedOnZone(int dogNum){
-        System.out.println("getting next position based on zone");
+        //System.out.println("getting next position based on zone");
 	Point currentPosition = dogs[dogNum];
         int zoneNumber = dogToZone.get(dogNum);
         Zone myZone = zones.get(zoneNumber);
-	System.out.println("got my zone");
+	//System.out.println("got my zone");
         /*
         If there are more dogs than zones, then there will be multiple dogs per zone. Therefore we will be assigning
         multiple dogs to a zone, and tier determines which sheep they target. Tier = 0 means that they target the farthest sheep in that zone,
@@ -128,7 +130,20 @@ public class Player extends sheepdog.sim.Player {
         Collections.sort(dogsInThisZone);
         int tier = dogsInThisZone.indexOf(dogNum);
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
-	System.out.println("got sorted sheep");
+	//System.out.println("got sorted sheep");
+	
+		//NEW: if the dog's original zone is different than its current zone, and the dog's original zone is not empty, dog should be reassigned to original zone
+		int originalZoneNumber = originalDogToZone.get(dogNum);
+		if (originalZoneNumber != zoneNumber){
+			if (zones.get(originalZoneNumber).hasSheep(this.sheeps)){
+				System.out.println("My current zone is " + zoneNumber + " but my original zone, " + originalZoneNumber + ", has no sheep. Going back to that zone");
+				dogToZone.put(dogNum, originalZoneNumber);
+				zoneNumber = originalZoneNumber;
+				myZone = zones.get(originalZoneNumber);
+			}
+		}
+		//end new
+		
         if (myZone.hasSheep(this.sheeps)) {
             if (tier == -1) {
                 tier = 0;
@@ -379,6 +394,7 @@ public class Player extends sheepdog.sim.Player {
 						return currentPosition;
 					}
 				}
+			}	
 				else if (totalZones == 7){
 					if (zoneNumber == 0){
 						if (zones.get(1).hasSheep(this.sheeps)){
@@ -610,7 +626,7 @@ public class Player extends sheepdog.sim.Player {
 		
 		System.out.println("finished else...");
            	 return Calculator.getMoveTowardPoint(currentPosition, myZone.getCenter());
-		}
+		
     }
 
     public Point chaseSheepTowardGoal(int dogNum, int sheepNum, Point goal) {
