@@ -130,11 +130,11 @@ public class Player extends sheepdog.sim.Player {
         Collections.sort(dogsInThisZone);
         int tier = dogsInThisZone.indexOf(dogNum);
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(currentPosition/*myZone.getGoal()*/, myZone.getSheepIndices(this.sheeps));
-	System.out.println("sheeps closest to me, in order: " );	
+	/*System.out.println("sheeps closest to me, in order: " );	
 	for (int i = 0; i < sortedSheep.size(); i++){
 		int currentIndex = sortedSheep.get(i);
 		System.out.println("sheep at: " + this.sheeps[currentIndex].x + ", " + this.sheeps[currentIndex].y + "dist- " + Utils.dist(currentPosition, this.sheeps[currentIndex]));
-	}
+	}*/
 	//System.out.println("got sorted sheep");
 	
 		//NEW: if the dog's original zone is different than its current zone, and the dog's original zone is not empty, dog should be reassigned to original zone
@@ -174,11 +174,11 @@ public class Player extends sheepdog.sim.Player {
             // distribute the dogs more evenly?
  	    System.out.println("my zone is empty (line 153), trying to reassign!");
             
-	    if (Utils.pointsEqual(myZone.goalPoint, Zone.GATE)) {
+	 /*   if (Utils.pointsEqual(myZone.goalPoint, Zone.GATE)) {
                 System.out.println("My zone is the zone closest to the goal, not reassigning. But I am not moving, so this is bad--TO FIX!");
 		return currentPosition;
             }
-
+	*/
             /*ArrayList<Integer> sortedZones = getNumSheepSortedZones();
             for (int i = 0; i < sortedZones.size(); i++) {
                 Zone tmpZone = zones.get(sortedZones.get(i));
