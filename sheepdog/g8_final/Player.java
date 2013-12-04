@@ -127,6 +127,7 @@ public class Player extends sheepdog.sim.Player {
         Collections.sort(dogsInThisZone);
         int tier = dogsInThisZone.indexOf(dogNum);
 
+	System.out.println(myZone.getGoal());
         ArrayList<Integer> sortedSheep = getDistanceSortedIndices(myZone.getGoal(), myZone.getSheepIndices(this.sheeps));
 
         if (myZone.hasSheep(this.sheeps)) {
